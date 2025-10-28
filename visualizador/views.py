@@ -1,13 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import io
 
 def index(request):
     return render(request, 'visualizador/index.html')
 
-@csrf_exempt
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
