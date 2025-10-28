@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import io
 
 def index(request):
     return render(request, 'visualizador/index.html')
 
+@csrf_exempt
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
@@ -25,12 +27,13 @@ def upload_file(request):
             for line in lines:
                 line = line.strip()
                 
-                if line.startswith('@attribute'):
+                if line.startswith('@attribute') or line.startswith('@ATTRIBUTE'):
                     parts = line.split()
-                    attr_name = parts[1]
-                    attributes.append(attr_name)
+                    if len(parts) >= 2:
+                        attr_name = parts[1]
+                        attributes.append(attr_name)
                 
-                if line == '@data':
+                if line.lower() == '@data':
                     data_section = True
                     continue
                 
